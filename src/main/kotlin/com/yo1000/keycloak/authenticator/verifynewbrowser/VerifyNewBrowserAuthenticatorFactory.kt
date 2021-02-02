@@ -1,4 +1,4 @@
-package com.yo1000.keycloak.authenticator.newbrowsercheck
+package com.yo1000.keycloak.authenticator.verifynewbrowser
 
 import org.keycloak.Config
 import org.keycloak.authentication.Authenticator
@@ -9,9 +9,9 @@ import org.keycloak.models.KeycloakSession
 import org.keycloak.models.KeycloakSessionFactory
 import org.keycloak.provider.ProviderConfigProperty
 
-class NewBrowserCheckAuthenticatorFactory : AuthenticatorFactory, ConfigurableAuthenticatorFactory {
+class VerifyNewBrowserAuthenticatorFactory : AuthenticatorFactory, ConfigurableAuthenticatorFactory {
     companion object {
-        const val ID = "new-browser-check-authenticator"
+        const val ID = "verify-new-browser-authenticator"
 
         val REQUIREMENT_CHOICES = arrayOf(
                 Requirement.REQUIRED,
@@ -19,14 +19,29 @@ class NewBrowserCheckAuthenticatorFactory : AuthenticatorFactory, ConfigurableAu
                 Requirement.DISABLED
         )
 
-        val AUTHENTICATOR = NewBrowserCheckAuthenticator()
+        val AUTHENTICATOR = VerifyNewBrowserAuthenticator()
 
-        val configProps: MutableList<ProviderConfigProperty> = mutableListOf()
+        val configProps: MutableList<ProviderConfigProperty> = mutableListOf(
+                ProviderConfigProperty().also {
+                    it.name = "cookie.maxAge.browserId"
+                    it.label = ""
+                    it.type = ProviderConfigProperty.TEXT_TYPE
+                    it.helpText = ""
+                    it.defaultValue = ""
+                },
+                ProviderConfigProperty().also {
+                    it.name = "cookie.maxAge.challengeToken"
+                    it.label = ""
+                    it.type = ProviderConfigProperty.TEXT_TYPE
+                    it.helpText = ""
+                    it.defaultValue = ""
+                }
+        )
     }
 
     override fun getId(): String = ID
 
-    override fun getDisplayType(): String = "New Browser Check"
+    override fun getDisplayType(): String = "Verify New Browser"
 
     override fun getReferenceCategory(): String = displayType
 

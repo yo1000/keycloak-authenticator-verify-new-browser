@@ -1,5 +1,5 @@
-# keycloak-authenticator-new-browser-check
-Keycloak Authenticator New browser check
+# keycloak-authenticator-verify-new-browser
+Keycloak Authenticator Verify new browser
 
 ## How to build
 ```
@@ -27,9 +27,9 @@ Keycloak Authenticator New browser check
     3. Input `browser with verification by email` to [New Name]
     4. Chose `Browser With Verification By Email` in dropdown
     5. Click [Actions] > [Add execution] in `Browser With Verification By Email Forms` row
-    6. Chose `New Browser Check` in dropdown on  [Provider] section
+    6. Chose `Verify New Browser` in dropdown on  [Provider] section
     7. Click [Save] button
-    8. Chose [REQUIRED] in `New Browser Check` row
+    8. Chose [REQUIRED] in `Verify New Browser` row
 5. Click [Clients] > `account-console` link in [Lookup] tab > [Authentication Flow Overrides] in [Settings] tab
     3. Chose `browser with verification by email` in dropdown on [Browser Flow] section
     4. Click [Save] button
@@ -45,4 +45,4 @@ Keycloak Authenticator New browser check
     2. Input `admin1234` to [Password]
     3. Click [Sign In] button
 11. Move to http://localhost:8025/ and Click [Inbox] link
-    1. Open email and Click link in body of text that starts with `http://localhost:8080/auth/realms/master/login-actions/authenticate?`
+    1. Open email and Click `Verify login by new browser` link in body of text that starts with `http://localhost:8080/auth/realms/master/login-actions/action-token?`

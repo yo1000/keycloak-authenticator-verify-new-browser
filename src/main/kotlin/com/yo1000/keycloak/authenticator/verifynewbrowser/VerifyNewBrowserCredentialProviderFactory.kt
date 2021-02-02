@@ -1,17 +1,17 @@
-package com.yo1000.keycloak.authenticator.newbrowsercheck
+package com.yo1000.keycloak.authenticator.verifynewbrowser
 
 import org.keycloak.credential.CredentialProvider
 import org.keycloak.credential.CredentialProviderFactory
 import org.keycloak.models.KeycloakSession
 
-class NewBrowserCheckCredentialProviderFactory : CredentialProviderFactory<NewBrowserCheckCredentialProvider> {
+class VerifyNewBrowserCredentialProviderFactory : CredentialProviderFactory<VerifyNewBrowserCredentialProvider> {
     companion object {
-        const val ID = "new-browser-check"
+        const val ID = "verify-new-browser"
     }
 
     override fun getId(): String = ID
 
     override fun create(session: KeycloakSession): CredentialProvider<*> {
-        return NewBrowserCheckCredentialProvider(session)
+        return VerifyNewBrowserCredentialProvider(session)
     }
 }

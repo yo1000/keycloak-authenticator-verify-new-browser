@@ -1,4 +1,4 @@
-package com.yo1000.keycloak.authenticator.newbrowsercheck
+package com.yo1000.keycloak.authenticator.verifynewbrowser
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -15,7 +15,7 @@ import org.keycloak.util.JsonSerialization
 import java.util.*
 import kotlin.random.Random
 
-class NewBrowserCheckCredentialModel(
+class VerifyNewBrowserCredentialModel(
         id: String = UUID.randomUUID().toString(),
         type: String = TYPE,
         userLabel: String? = null,
@@ -23,7 +23,7 @@ class NewBrowserCheckCredentialModel(
         val secretData: SecretData
 ) : CredentialModel() {
     companion object {
-        const val TYPE = "new-browser-check"
+        const val TYPE = "verify-new-browser"
     }
 
     init {
@@ -50,7 +50,7 @@ class NewBrowserCheckCredentialModel(
             userLabel: String? = this.userLabel,
             createdDate: Long = this.createdDate,
             secretData: SecretData = this.secretData
-    ): NewBrowserCheckCredentialModel = NewBrowserCheckCredentialModel(
+    ): VerifyNewBrowserCredentialModel = VerifyNewBrowserCredentialModel(
             id = id,
             type = type,
             userLabel = userLabel,
@@ -72,17 +72,11 @@ class NewBrowserCheckCredentialModel(
             fun createBrowser(
                     session: KeycloakSession,
                     hashMetadata: HashMetadata,
-                    rawBrowserId: String,
-                    rawChallengeToken: String,
-                    challengeExpires: Long
+                    rawBrowserId: String
             ): Browser {
                 return Browser(
                         id = encode(session, hashMetadata, rawBrowserId),
-                        trusted = false,
-                        challenge = Challenge(
-                                token = encode(session, hashMetadata, rawChallengeToken),
-                                expires = challengeExpires
-                        )
+                        trusted = false
                 )
             }
 
@@ -105,8 +99,12 @@ class NewBrowserCheckCredentialModel(
             return JsonSerialization.writeValueAsString(this)
         }
 
-        fun addBrowser(browser: Browser): SecretData {
-            return updateBrowsers(browsers + browser)
+        fun verifyBrowserTrusted(session: KeycloakSession, rawBrowserId: String?): Boolean {
+            if (rawBrowserId == null) return false
+
+            return browsers.find {
+                verify(session, rawBrowserId, it.id)
+            }?.trusted ?: false
         }
 
         fun trustBrowser(session: KeycloakSession, rawBrowserId: String): SecretData {
@@ -116,25 +114,12 @@ class NewBrowserCheckCredentialModel(
             return removeBrowser(session, rawBrowserId).addBrowser(trustedBrowser)
         }
 
-        fun removeBrowser(session: KeycloakSession, rawBrowserId: String): SecretData {
+        fun addBrowser(browser: Browser): SecretData {
+            return updateBrowsers(browsers + browser)
+        }
+
+        private fun removeBrowser(session: KeycloakSession, rawBrowserId: String): SecretData {
             return updateBrowsers(browsers.filterNot { verify(session, rawBrowserId, it.id) })
-        }
-
-        fun verifyBrowserTrusted(session: KeycloakSession, rawBrowserId: String?): Boolean {
-            if (rawBrowserId == null) return false
-
-            return browsers.find {
-                verify(session, rawBrowserId, it.id)
-            }?.trusted ?: false
-        }
-
-        fun verifyChallengeExpiration(session: KeycloakSession, rawBrowserId: String?, rawChallengeToken: String?): Boolean {
-            if (rawBrowserId == null) return false
-            if (rawChallengeToken == null) return false
-
-            return getBrowser(session, rawBrowserId)?.challenge?.let {
-                verify(session, rawChallengeToken, it.token) && it.expires >= Time.currentTimeMillis()
-            } ?: false
         }
 
         private fun updateBrowsers(browsers: List<Browser>): SecretData {
@@ -161,16 +146,7 @@ class NewBrowserCheckCredentialModel(
             @JsonProperty("id")
             val id: Hash,
             @JsonProperty("trusted")
-            val trusted: Boolean = false,
-            @JsonProperty("challenge")
-            val challenge: Challenge
-    )
-
-    data class Challenge @JsonCreator constructor(
-            @JsonProperty("token")
-            val token: Hash,
-            @JsonProperty("expires")
-            val expires: Long
+            val trusted: Boolean = false
     )
 
     data class Hash @JsonCreator constructor(

@@ -7,11 +7,11 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <name>Keycloak Authenticator New browser check</name>
+    <name>Keycloak Authenticator Verify new browser</name>
     <description/>
 
     <groupId>com.yo1000</groupId>
-    <artifactId>keycloak-authenticator-new-browser-check</artifactId>
+    <artifactId>keycloak-authenticator-verify-new-browser</artifactId>
     <packaging>jar</packaging>
 
     <properties>

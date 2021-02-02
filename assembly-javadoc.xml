@@ -11,7 +11,7 @@
     <baseDirectory>/</baseDirectory>
     <fileSets>
         <fileSet>
-            <directory>target/dokka/keycloak-authenticator-first-browser-check</directory>
+            <directory>target/dokka/keycloak-authenticator-verify-new-browser</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>
