@@ -12,6 +12,10 @@ import org.keycloak.provider.ProviderConfigProperty
 class VerifyNewBrowserAuthenticatorFactory : AuthenticatorFactory, ConfigurableAuthenticatorFactory {
     companion object {
         const val ID = "verify-new-browser-authenticator"
+        const val CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID = "cookie.maxAge.browserId"
+        const val CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID_DEFAULT = 60 * 60 * 24 * 365 * 10 // Default: 10 years
+        const val CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE = "jwt.maxAge.authenticationChallenge"
+        const val CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT = 60 * 60 // Default: 1 hour
 
         val REQUIREMENT_CHOICES = arrayOf(
                 Requirement.REQUIRED,
@@ -23,18 +27,18 @@ class VerifyNewBrowserAuthenticatorFactory : AuthenticatorFactory, ConfigurableA
 
         val configProps: MutableList<ProviderConfigProperty> = mutableListOf(
                 ProviderConfigProperty().also {
-                    it.name = "cookie.maxAge.browserId"
-                    it.label = ""
-                    it.type = ProviderConfigProperty.TEXT_TYPE
-                    it.helpText = ""
-                    it.defaultValue = ""
+                    it.name = CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID
+                    it.label = "Browser identification cookie Max age"
+                    it.type = ProviderConfigProperty.STRING_TYPE
+                    it.helpText = "Max age in seconds of the Browser ID Cookie"
+                    it.defaultValue = CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID_DEFAULT
                 },
                 ProviderConfigProperty().also {
-                    it.name = "cookie.maxAge.challengeToken"
-                    it.label = ""
-                    it.type = ProviderConfigProperty.TEXT_TYPE
-                    it.helpText = ""
-                    it.defaultValue = ""
+                    it.name = CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE
+                    it.label = "Authentication challenge JWT Max age"
+                    it.type = ProviderConfigProperty.STRING_TYPE
+                    it.helpText = "Max age in seconds of the Authentication challenge JWT"
+                    it.defaultValue = CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT
                 }
         )
     }
@@ -49,7 +53,7 @@ class VerifyNewBrowserAuthenticatorFactory : AuthenticatorFactory, ConfigurableA
 
     override fun getRequirementChoices(): Array<Requirement> = REQUIREMENT_CHOICES
 
-    override fun isConfigurable(): Boolean = false
+    override fun isConfigurable(): Boolean = true
 
     override fun getConfigProperties(): MutableList<ProviderConfigProperty> = configProps
 

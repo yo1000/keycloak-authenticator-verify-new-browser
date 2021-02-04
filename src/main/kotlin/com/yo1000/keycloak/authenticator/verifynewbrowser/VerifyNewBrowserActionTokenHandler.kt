@@ -4,30 +4,25 @@ import org.keycloak.authentication.AuthenticationProcessor
 import org.keycloak.authentication.actiontoken.AbstractActionTokenHander
 import org.keycloak.authentication.actiontoken.ActionTokenContext
 import org.keycloak.credential.CredentialProvider
+import org.keycloak.events.Errors
 import org.keycloak.events.EventType
 import org.keycloak.exceptions.TokenVerificationException
 import org.keycloak.forms.login.LoginFormsProvider
 import org.keycloak.models.KeycloakSession
 import org.keycloak.models.RealmModel
 import org.keycloak.services.managers.AuthenticationManager
+import org.keycloak.services.messages.Messages
 import org.keycloak.sessions.AuthenticationSessionModel
 import javax.ws.rs.core.Cookie
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriInfo
 
-/*
-VerifyEmailActionToken.TOKEN_TYPE,
-          VerifyEmailActionToken.class,
-          Messages.STALE_VERIFY_EMAIL_LINK,
-          EventType.VERIFY_EMAIL,
-          Errors.INVALID_TOKEN
- */
 class VerifyNewBrowserActionTokenHandler : AbstractActionTokenHander<VerifyNewBrowserActionToken>(
         VerifyNewBrowserActionToken.TOKEN_TYPE,
         VerifyNewBrowserActionToken::class.java,
-        "", // TODO ErroMessage??
+        Messages.STALE_VERIFY_EMAIL_LINK,
         EventType.EXECUTE_ACTION_TOKEN,
-        "" // TODO ErroMessage??
+        Errors.INVALID_TOKEN
 ) {
     companion object {
         const val COOKIE_NAME_BROWSER_ID = "VERIFY_NEW_BROWSER_ID"
