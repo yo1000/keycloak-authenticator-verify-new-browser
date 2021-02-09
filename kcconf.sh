@@ -40,6 +40,12 @@ POST ${KC_URI_BASE}/realms/${KC_REALM}/protocol/openid-connect/token
 
 # ================================================================================
 # Configure SMTP
+#
+# [Realm Settings] > [Email] tab
+#   1. Input `mailhog` to [Host]
+#   2. Input `1025` to [Port]
+#   3. Input `postmaster@localhost` to [From]
+#   4. Click [Save] button
 # ================================================================================
 curl -s -XPUT \
   -H "Content-Type: application/json;charset=UTF-8" \
@@ -69,6 +75,16 @@ PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}
 
 # ================================================================================
 # Configure Authentication Flow
+#
+# [Authentication] > [Flows] tab
+#   1. Chose `Browser` in dropdown
+#   2. Click [Copy] button
+#   3. Input `browserWithNewBrowserVerify` to [New Name]
+#   4. Chose `BrowserWithNewBrowserVerify` in dropdown
+#   5. Click [Actions] > [Add execution] in `BrowserWithNewBrowserVerify Forms` row
+#   6. Chose `Verify New Browser` in dropdown on  [Provider] section
+#   7. Click [Save] button
+#   8. Chose [REQUIRED] in `Verify New Browser` row
 # ================================================================================
 KC_AUTHN_FLOW_ALIAS="browser"
 KC_AUTHN_FLOW_ALIAS_NEW="browserWithNewBrowserVerify"
@@ -123,6 +139,10 @@ PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW
 
 # ================================================================================
 # Configure Authentication Flow to Client (account-console)
+#
+# [Clients] > `account-console` link in [Lookup] tab > [Authentication Flow Overrides] in [Settings] tab
+#   1. Chose `browserWithNewBrowserVerify` in dropdown on [Browser Flow] section
+#   2. Click [Save] button
 # ================================================================================
 KC_CLIENT_ID=$(curl -s -XGET \
   -H "Content-Type: application/json;charset=UTF-8" \
