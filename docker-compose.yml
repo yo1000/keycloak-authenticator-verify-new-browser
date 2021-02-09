@@ -17,4 +17,10 @@ services:
     ports:
       - 8025:8025
       - 1025:1025
-
+  keycloak-config-script:
+    image: cfmanteiga/alpine-bash-curl-jq
+    container_name: keycloak-config-script
+    volumes:
+      - ./kcconf.sh:/tmp/kcconf.sh
+    entrypoint: >
+      sh -c "sh /tmp/kcconf.sh"

@@ -1,17 +1,19 @@
+#!/bin/bash
+
 # ================================================================================
 # Request Access Token
 # ================================================================================
-KC_URI_BASE="http://localhost:8080/auth"
+KC_URI_BASE="http://keycloak:8080/auth"
 KC_REALM="master"
 
 KC_CONN_RETRY=1
-KC_CONN_RETRY_MAX=127
-while [[ ! "$(curl -D - -s -o /dev/null http://localhost:8080/auth/ | head -n1 | sed -e 's/[^a-zA-Z0-9\-\ ]*//g')" =~ OK$ ]] ; do
+KC_CONN_RETRY_MAX=255
+while [[ "$(curl -D - -s -o /dev/null "${KC_URI_BASE}/" | head -n1 | sed -e 's/[^a-zA-Z0-9\-\ ]*//g' | awk '{print $2}')" != "200" ]] ; do
   if [[ $KC_CONN_RETRY -gt $KC_CONN_RETRY_MAX ]] ; then
     exit 1
   fi
 
-  echo "Wait to retry connection to Keycloak (sleep: ${$KC_CONN_RETRY}s)"
+  echo "Wait to retry connection to Keycloak (sleep: ${KC_CONN_RETRY}s)"
   sleep $KC_CONN_RETRY
 
   KC_CONN_RETRY=$(expr $KC_CONN_RETRY + $KC_CONN_RETRY)
