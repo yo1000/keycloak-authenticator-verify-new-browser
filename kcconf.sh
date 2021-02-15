@@ -202,6 +202,7 @@ curl -s -XPOST \
     "email"         : "user@localhost",
     "firstName"     : "Bob",
     "lastName"      : "User",
+    "enabled"       : true,
     "emailVerified" : true,
     "credentials" : [{
       "type"        : "password",
@@ -229,6 +230,7 @@ POST ${KC_URI_BASE}/admin/realms/${KC_REALM}/users
   email         : user@localhost,
   firstName     : Bob,
   lastName      : User,
+  enabled       : true,
   emailVerified : true,
   credentials : [{
     type        : password,
