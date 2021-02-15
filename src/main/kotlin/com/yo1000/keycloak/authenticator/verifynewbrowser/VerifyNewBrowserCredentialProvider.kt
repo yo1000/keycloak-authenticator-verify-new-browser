@@ -29,16 +29,16 @@ class VerifyNewBrowserCredentialProvider(
         return VerifyNewBrowserCredentialModel(credential)
     }
 
-    override fun createCredential(realm: RealmModel, user: UserModel, credentialVerify: VerifyNewBrowserCredentialModel): CredentialModel {
-        if (credentialVerify.createdDate == null) {
-            credentialVerify.createdDate = Time.currentTimeMillis()
+    override fun createCredential(realm: RealmModel, user: UserModel, credential: VerifyNewBrowserCredentialModel): CredentialModel {
+        if (credential.createdDate == null) {
+            credential.createdDate = Time.currentTimeMillis()
         }
 
-        return credentialStore.createCredential(realm, user, credentialVerify)
+        return credentialStore.createCredential(realm, user, credential)
     }
 
-    fun updateCredential(realm: RealmModel, user: UserModel, credentialVerify: VerifyNewBrowserCredentialModel) {
-        credentialStore.updateCredential(realm, user, credentialVerify)
+    fun updateCredential(realm: RealmModel, user: UserModel, credential: VerifyNewBrowserCredentialModel) {
+        credentialStore.updateCredential(realm, user, credential)
     }
 
     override fun deleteCredential(realm: RealmModel, user: UserModel, credentialId: String): Boolean {

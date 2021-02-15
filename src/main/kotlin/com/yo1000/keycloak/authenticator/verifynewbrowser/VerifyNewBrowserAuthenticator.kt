@@ -27,8 +27,8 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
 
     override fun authenticate(context: AuthenticationFlowContext) {
         val session: KeycloakSession = context.session
-        val credentialProviderVerify: VerifyNewBrowserCredentialProvider = getCredentialProvider(session)
-        val credential: VerifyNewBrowserCredentialModel? = credentialProviderVerify.getCredential(context.realm, context.user)
+        val credentialProvider: VerifyNewBrowserCredentialProvider = getCredentialProvider(session)
+        val credential: VerifyNewBrowserCredentialModel? = credentialProvider.getCredential(context.realm, context.user)
         val rawBrowserId: String? = context.getCookie(COOKIE_NAME_BROWSER_ID)?.value
 
         if (credential?.secretData?.verifyBrowserTrusted(session, rawBrowserId) == true) {

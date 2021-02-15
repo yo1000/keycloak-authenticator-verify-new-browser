@@ -37,16 +37,16 @@ class VerifyNewBrowserActionTokenHandler : AbstractActionTokenHander<VerifyNewBr
         val conn = tokenContext.clientConnection
         val event = tokenContext.event
         val request = tokenContext.request
-        val credentialProviderVerify: VerifyNewBrowserCredentialProvider = keycloakSession.getCredentialProvider()
+        val credentialProvider: VerifyNewBrowserCredentialProvider = keycloakSession.getCredentialProvider()
 
         val tokenRawBrowserId: String = token.browserId
                 ?: throw TokenVerificationException(token, "BrowserId linked to token does not exist")
 
-        val credentialVerify: VerifyNewBrowserCredentialModel = credentialProviderVerify.getCredential(realm, user)
+        val credential: VerifyNewBrowserCredentialModel = credentialProvider.getCredential(realm, user)
                 ?: throw TokenVerificationException(token, "Credential linked to token does not exist")
 
-        credentialProviderVerify.updateCredential(realm, user,  credentialVerify.copy(
-                secretData = credentialVerify.secretData.trustBrowser(keycloakSession, tokenRawBrowserId)
+        credentialProvider.updateCredential(realm, user,  credential.copy(
+                secretData = credential.secretData.trustBrowser(keycloakSession, tokenRawBrowserId)
         ))
 
         val cookieRawBrowserId: String? = request.httpHeaders.cookies[COOKIE_NAME_BROWSER_ID]?.value
