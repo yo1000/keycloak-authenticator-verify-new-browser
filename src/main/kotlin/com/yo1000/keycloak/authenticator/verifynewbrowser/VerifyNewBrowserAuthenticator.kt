@@ -13,6 +13,7 @@ import org.keycloak.email.EmailTemplateProvider
 import org.keycloak.models.KeycloakSession
 import org.keycloak.models.RealmModel
 import org.keycloak.models.UserModel
+import java.net.URI
 import java.time.Duration
 import java.util.*
 import javax.ws.rs.core.Cookie
@@ -169,11 +170,11 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
     private fun AuthenticationFlowContext.addCookie(
             name: String, value: String, maxAge: Int
     ) {
-        val uri = uriInfo.baseUriBuilder.path("realms").path(realm.name).build()
+        val uri: URI = uriInfo.baseUriBuilder.path("realms").path(realm.name).build()
 
         httpResponse.addCookie(
                 name, value,
-                uri.rawPath, null, null,
+                uri.rawPathWithTrailingSlash, null, null,
                 maxAge, secure = false, httpOnly = true
         )
     }
@@ -198,5 +199,12 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                         "link" to actionUrl,
                         "linkExpiration" to Duration.ofMillis(maxAge.toLong()).toHours()
                 ))
+    }
+
+    private val URI.rawPathWithTrailingSlash get(): String {
+        return if (rawPath.endsWith("/"))
+            rawPath
+        else
+            "$rawPath/"
     }
 }
