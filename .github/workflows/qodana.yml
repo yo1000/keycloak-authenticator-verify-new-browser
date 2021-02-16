@@ -1,0 +1,28 @@
+name: Qodana - Code Inspection
+
+on:
+  push:
+    branches: [qodana]
+    paths:
+      - .github/workflows/qodana.yml
+
+jobs:
+  code_inspection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Qodana - Code Inspection
+        uses: JetBrains/qodana-action@v1.0-eap
+        with:
+          report-dir: docs
+
+      - name: Deploy to GitHub Pages
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs
+          git commit -m "Update code inspection report"
+          git push
