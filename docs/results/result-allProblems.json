@@ -1,0 +1,85 @@
+{"version":"3","listProblem":[{
+  "tool": "Code Inspection",
+  "category": "Kotlin",
+  "type": "Maven and IDE plugins versions are different",
+  "severity": "High",
+  "comment": "Kotlin version that is used for building with Maven (1.3.61) differs from the one bundled into the IDE plugin (1.4.10)",
+  "detailsInfo": "\u003chtml\u003e\n\u003cbody\u003e\nThis inspection reports different IDE and Maven plugin versions are used.\nThis can cause inconsistencies between IDE and Maven build in error reporting or code behaviour.\n\u003c/body\u003e\n\u003c/html\u003e",
+  "sources": [
+    {
+      "type": "file",
+      "path": "pom.xml",
+      "language": "XML",
+      "line": 109,
+      "offset": 25,
+      "length": 17,
+      "code": {
+        "startLine": 107,
+        "length": 17,
+        "offset": 142,
+        "surroundingCode": "                \u003cartifactId\u003ekotlin-maven-plugin\u003c/artifactId\u003e\n                \u003cgroupId\u003eorg.jetbrains.kotlin\u003c/groupId\u003e\n                \u003cversion\u003e${kotlin.version}\u003c/version\u003e\n                \u003cexecutions\u003e\n                    \u003cexecution\u003e"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "keycloak-authenticator-verify-new-browser",
+    "inspectionName": "DifferentKotlinMavenVersion"
+  },
+  "hash": -6969760532921679301
+},{
+  "tool": "Code Inspection",
+  "category": "Redundant constructs",
+  "type": "Explicitly given type is redundant here",
+  "severity": "High",
+  "comment": "Explicitly given type is redundant here",
+  "detailsInfo": "\u003chtml\u003e\n\u003cbody\u003e\nThis inspection reports local variables\u0027 explicitly given types which are obvious and thus redundant, like \u003cb\u003eval f: Foo \u003d Foo()\u003c/b\u003e.\n\u003c/body\u003e\n\u003c/html\u003e\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "src/main/kotlin/com/yo1000/keycloak/authenticator/verifynewbrowser/VerifyNewBrowserAuthenticator.kt",
+      "language": "kotlin",
+      "line": 70,
+      "offset": 25,
+      "length": 27,
+      "code": {
+        "startLine": 68,
+        "length": 27,
+        "offset": 131,
+        "surroundingCode": "                ?: VerifyNewBrowserAuthenticatorFactory.CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT\n\n        val actionToken: VerifyNewBrowserActionToken \u003d VerifyNewBrowserActionToken(\n                context.user.id, Time.currentTime() + challengeTokenMaxAge, rawBrowserId)\n        val actionTokenUri: String \u003d context.getActionTokenUrl("
+      }
+    }
+  ],
+  "attributes": {
+    "module": "keycloak-authenticator-verify-new-browser",
+    "inspectionName": "RedundantExplicitType"
+  },
+  "hash": 4142805924180930091
+},{
+  "tool": "Code Inspection",
+  "category": "Redundant constructs",
+  "type": "Explicitly given type is redundant here",
+  "severity": "High",
+  "comment": "Explicitly given type is redundant here",
+  "detailsInfo": "\u003chtml\u003e\n\u003cbody\u003e\nThis inspection reports local variables\u0027 explicitly given types which are obvious and thus redundant, like \u003cb\u003eval f: Foo \u003d Foo()\u003c/b\u003e.\n\u003c/body\u003e\n\u003c/html\u003e\n",
+  "sources": [
+    {
+      "type": "file",
+      "path": "src/main/kotlin/com/yo1000/keycloak/authenticator/verifynewbrowser/VerifyNewBrowserAuthenticator.kt",
+      "language": "kotlin",
+      "line": 110,
+      "offset": 25,
+      "length": 27,
+      "code": {
+        "startLine": 108,
+        "length": 27,
+        "offset": 131,
+        "surroundingCode": "                ?: VerifyNewBrowserAuthenticatorFactory.CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT\n\n        val actionToken: VerifyNewBrowserActionToken \u003d VerifyNewBrowserActionToken(\n                context.user.id, Time.currentTime() + challengeTokenMaxAge, rawBrowserId)\n        val actionTokenUri: String \u003d context.getActionTokenUrl("
+      }
+    }
+  ],
+  "attributes": {
+    "module": "keycloak-authenticator-verify-new-browser",
+    "inspectionName": "RedundantExplicitType"
+  },
+  "hash": -4447018269732795459
+}]}
