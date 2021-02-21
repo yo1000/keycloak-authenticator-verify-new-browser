@@ -34,7 +34,7 @@ class RegistrationNewBrowser : FormAction, FormActionFactory {
         )
     }
 
-    /* FormAction Metadata */
+    /* FormAction Factory */
 
     override fun getId(): String = ID
 

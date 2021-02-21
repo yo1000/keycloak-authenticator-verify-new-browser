@@ -53,7 +53,7 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
         val logger: Logger = Logger.getLogger(VerifyNewBrowserAuthenticator::class.java)
     }
 
-    /* Authenticator Metadata */
+    /* Authenticator Factory */
 
     override fun getId(): String = ID
 
