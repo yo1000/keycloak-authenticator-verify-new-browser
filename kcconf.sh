@@ -74,7 +74,7 @@ PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}
 "
 
 # ================================================================================
-# Configure Authentication Flow
+# Configure Authentication Flow (Browser)
 #
 # [Authentication] > [Flows] tab
 #   1. Chose `Browser` in dropdown
@@ -120,7 +120,7 @@ KC_AUTHN_FLOW_ID=$(curl -s -XPUT \
 
 echo "
 ================================================================================
-Configured Authentication Flow
+Configured Authentication Flow (Browser)
 ================================================================================
 POST ${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS}/copy
 {
@@ -172,6 +172,119 @@ PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}/clients/${KC_CLIENT_ID}
   }
 }
 "
+
+# ================================================================================
+# Configure Authentication Flow (Registration)
+#
+# [Authentication] > [Flows] tab
+#   1. Chose `Registration` in dropdown
+#   2. Click [Copy] button
+#   3. Input `registrationWithNewBrowser` to [New Name]
+#   4. Chose `RegistrationWithNewBrowser` in dropdown
+#   5. Click [Actions] > [Add execution] in `RegistrationWithNewBrowser Registration Form` row
+#   6. Chose `New Browser` in dropdown on  [Provider] section
+#   7. Click [Save] button
+#   8. Chose [REQUIRED] in `New Browser` row
+# ================================================================================
+KC_AUTHN_FLOW_ALIAS="registration"
+KC_AUTHN_FLOW_ALIAS_NEW="registrationWithNewBrowser"
+
+curl -s -XPOST \
+  -H "Content-Type: application/json;charset=UTF-8" \
+  -H "Authorization: bearer ${KC_ACCESS_TOKEN}" \
+  "${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS}/copy" \
+  -d "{
+    \"newName\" : \"${KC_AUTHN_FLOW_ALIAS_NEW}\"
+  }"
+
+# Add execution to flow
+KC_AUTHN_FLOW_EXEC_ID=$(curl -D - -s -o /dev/null -XPOST \
+  -H "Content-Type: application/json;charset=UTF-8" \
+  -H "Authorization: bearer ${KC_ACCESS_TOKEN}" \
+  "${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS_NEW}%20registration%20form/executions/execution" \
+  -d '{
+    "provider" : "registration-new-browser-action"
+  }' \
+| grep -E '^Location:' | sed -e 's/Location:.*\///g' | sed -e 's/[^a-zA-Z0-9\-]*//g')
+
+# Update execution requirement to REQUIRED
+KC_AUTHN_FLOW_ID=$(curl -s -XPUT \
+  -H "Content-Type: application/json;charset=UTF-8" \
+  -H "Authorization: bearer ${KC_ACCESS_TOKEN}" \
+  "${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS_NEW}/executions" \
+  -d "{
+    \"id\" : \"${KC_AUTHN_FLOW_EXEC_ID}\",
+    \"requirement\":\"REQUIRED\"
+  }" \
+| jq -r '.id')
+
+echo "
+================================================================================
+Configured Authentication Flow (Registration)
+================================================================================
+POST ${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS}/copy
+{
+  newName : ${KC_AUTHN_FLOW_ALIAS_NEW}
+}
+POST ${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS_NEW}%20forms/executions/execution
+{
+  provider : registration-new-browser-action
+}
+PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}/authentication/flows/${KC_AUTHN_FLOW_ALIAS_NEW}/executions
+{
+  id : ${KC_AUTHN_FLOW_EXEC_ID},
+  requirement : REQUIRED
+}
+"
+
+# ================================================================================
+# Configure Registration Flow Bindings
+#
+# [Authentication] > [Bindings] tab
+#   1. Chose `registrationWithNewBrowser` in Registration Flow dropdown
+#   2. Click [Save] button
+# ================================================================================
+curl -s -XPUT \
+  -H "Content-Type: application/json;charset=UTF-8" \
+  -H "Authorization: bearer ${KC_ACCESS_TOKEN}" \
+  "${KC_URI_BASE}/admin/realms/${KC_REALM}" \
+  -d "{
+    \"registrationFlow\" : \"${KC_AUTHN_FLOW_ALIAS_NEW}\"
+  }"
+
+echo "
+================================================================================
+Configured Registration Flow Bindings
+================================================================================
+PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}
+{
+  registrationFlow : ${KC_AUTHN_FLOW_ALIAS_NEW}
+}
+"
+
+# ================================================================================
+# Configure User registration to Enable in Login
+#
+# [Realm Settings] > [Login] tab
+#   1. Switch [User registration] toggle to `ON`
+#   2. Click [Save] button
+# ================================================================================
+curl -s -XPUT \
+  -H "Content-Type: application/json;charset=UTF-8" \
+  -H "Authorization: bearer ${KC_ACCESS_TOKEN}" \
+  "${KC_URI_BASE}/admin/realms/${KC_REALM}" \
+  -d '{
+    "registrationAllowed" : true
+  }'
+
+echo "
+================================================================================
+Configured User registration to Enable in Login
+================================================================================
+PUT ${KC_URI_BASE}/admin/realms/${KC_REALM}
+{
+  registrationAllowed : true
+}"
 
 # ================================================================================
 # Configured Users
