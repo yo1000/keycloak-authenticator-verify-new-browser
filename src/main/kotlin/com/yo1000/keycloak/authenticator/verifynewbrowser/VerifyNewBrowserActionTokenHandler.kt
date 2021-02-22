@@ -72,7 +72,9 @@ class VerifyNewBrowserActionTokenHandler : AbstractActionTokenHander<VerifyNewBr
                     uriInfo,
                     conn,
                     event,
-                    authnSession
+                    authnSession.also {
+                        it.redirectUri = token.redirectUri
+                    }
             )
         } else {
             return keycloakSession.getProvider(LoginFormsProvider::class.java)

@@ -123,7 +123,8 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                 ?: CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT
 
         val actionToken: VerifyNewBrowserActionToken = VerifyNewBrowserActionToken(
-                context.user.id, Time.currentTime() + challengeTokenMaxAge, rawBrowserId)
+                context.user.id, Time.currentTime() + challengeTokenMaxAge,
+                rawBrowserId, context.authenticationSession.redirectUri)
         val actionTokenUri: String = context.getActionTokenUrl(
                 actionToken.serialize(session, context.realm, context.uriInfo)).toURL().toString()
 
@@ -163,7 +164,8 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                 ?: CONFIG_PROPS_JWT_MAX_AGE_AUTHN_CHALLENGE_DEFAULT
 
         val actionToken: VerifyNewBrowserActionToken = VerifyNewBrowserActionToken(
-                context.user.id, Time.currentTime() + challengeTokenMaxAge, rawBrowserId)
+                context.user.id, Time.currentTime() + challengeTokenMaxAge,
+                rawBrowserId, context.authenticationSession.redirectUri)
         val actionTokenUri: String = context.getActionTokenUrl(
                 actionToken.serialize(session, context.realm, context.uriInfo)).toURL().toString()
 

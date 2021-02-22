@@ -8,7 +8,9 @@ class VerifyNewBrowserActionToken(
         userId: String?,
         absoluteExpirationInSecs: Int,
         @field:JsonProperty("browserId")
-        var browserId: String?
+        var browserId: String?,
+        @field:JsonProperty("redirectUri")
+        var redirectUri: String?
 ) : DefaultActionToken(
         userId,
         TOKEN_TYPE,
@@ -20,7 +22,7 @@ class VerifyNewBrowserActionToken(
     }
 
     @Suppress("unused")
-    private constructor() : this(null, 0, null) {
+    private constructor() : this(null, 0, null, null) {
         // !! Don't REMOVE !! You must have this private constructor for deserializer
     }
 }
