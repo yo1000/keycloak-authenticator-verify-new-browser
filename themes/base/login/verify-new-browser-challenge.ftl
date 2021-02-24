@@ -9,8 +9,7 @@
             <div class="${properties.kcFormGroupClass!}">
                 <div class="${properties.kcLabelWrapperClass!}">
                     <p for="totp" class="${properties.kcLabelClass!}">
-                        Confirmation email has been sent to your registered email address because you are logging in with a new browser.
-                        Please click on the link in the email to complete your login.
+                        ${challengeVerifyNewBrowserBody}
                     </p>
                 </div>
             </div>

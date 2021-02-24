@@ -9,8 +9,10 @@ import org.keycloak.common.util.ServerCookie
 import org.keycloak.common.util.Time
 import org.keycloak.credential.CredentialProvider
 import org.keycloak.email.EmailTemplateProvider
+import org.keycloak.forms.login.LoginFormsProvider
 import org.keycloak.models.*
 import org.keycloak.provider.ProviderConfigProperty
+import org.keycloak.theme.Theme
 import java.net.URI
 import java.time.Duration
 import java.util.*
@@ -146,7 +148,9 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                 ?: CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID_DEFAULT
 
         context.addCookie(COOKIE_NAME_BROWSER_ID, rawBrowserId, browserIdCookieMaxAge)
-        context.challenge(context.form().createForm("verify-new-browser-challenge.ftl"))
+        context.challenge(context.form()
+                .setMessageAttribute("challengeVerifyNewBrowserBody")
+                .createForm("verify-new-browser-challenge.ftl"))
     }
 
     private fun authenticateChallengeByNewCredential(
@@ -194,7 +198,9 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                 ?: CONFIG_PROPS_COOKIE_MAX_AGE_BROWSER_ID_DEFAULT
 
         context.addCookie(COOKIE_NAME_BROWSER_ID, rawBrowserId, browserIdCookieMaxAge)
-        context.challenge(context.form().createForm("verify-new-browser-challenge.ftl"))
+        context.challenge(context.form()
+                .setMessageAttribute("challengeVerifyNewBrowserBody")
+                .createForm("verify-new-browser-challenge.ftl"))
     }
 
     override fun requiresUser(): Boolean = true
@@ -208,6 +214,11 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
     /* Providers */
     override fun getCredentialProvider(session: KeycloakSession): VerifyNewBrowserCredentialProvider {
         return session.getProvider(CredentialProvider::class.java, VerifyNewBrowserCredentialProviderFactory.ID) as VerifyNewBrowserCredentialProvider
+    }
+
+    private fun LoginFormsProvider.setMessageAttribute(message: String, vararg parameters: String): LoginFormsProvider {
+        this.setAttribute(message, this.getMessage(message, *parameters))
+        return this
     }
 
     /* Response utility aliases */
@@ -245,6 +256,10 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
 
     /* Other context utility aliases */
     private fun AuthenticationFlowContext.sendFreeMakerEmail(actionUrl: String, maxAge: Int) {
+        val linkExpiration: Duration = Duration.ofSeconds(maxAge.toLong())
+        val locale: Locale = session.context.resolveLocale(user)
+        val messageProps: Properties = session.theme().getTheme(Theme.Type.EMAIL).getMessages(locale);
+
         session.getProvider(EmailTemplateProvider::class.java)
                 .setAuthenticationSession(session.context.authenticationSession)
                 .setRealm(realm)
@@ -252,7 +267,16 @@ class VerifyNewBrowserAuthenticator : Authenticator, CredentialValidator<VerifyN
                 .send("verifyNewBrowserSubject", "verify-new-browser.ftl", mapOf(
                         "username" to user.username,
                         "link" to actionUrl,
-                        "linkExpiration" to Duration.ofMillis(maxAge.toLong()).toHours()
+                        "linkExpiration" to when {
+                            linkExpiration.toDays() > 0 ->
+                                "${linkExpiration.toDays()}${messageProps["linkExpirationFormatter.timePeriodUnit.days"]}"
+                            linkExpiration.toHours() > 0 ->
+                                "${linkExpiration.toHours()}${messageProps["linkExpirationFormatter.timePeriodUnit.hours"]}"
+                            linkExpiration.toMinutes() > 0 ->
+                                "${linkExpiration.toMinutes()}${messageProps["linkExpirationFormatter.timePeriodUnit.minutes"]}"
+                            else ->
+                                "${linkExpiration.seconds}${messageProps["linkExpirationFormatter.timePeriodUnit.seconds"]}"
+                        }
                 ))
     }
 
